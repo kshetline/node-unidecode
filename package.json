@@ -20,7 +20,7 @@
     }
   ],
   "scripts": {
-    "test": "mocha",
+    "test": "mocha **/*.mocha.js",
     "lint": "jshint *.js */*.js",
     "speed-compare": "node test/speed-compare.js"
   },

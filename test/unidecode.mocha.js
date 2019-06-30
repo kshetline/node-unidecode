@@ -11,7 +11,7 @@
 var assert = require('assert');
 var unidecode = require('../unidecode');
 
-describe('Purity tests', function(){
+describe('Purity tests', function() {
 	var code;
 	var tests = [];
 
@@ -39,7 +39,7 @@ describe('Basic string tests', function() {
 	];
 
 	tests.forEach(function(test) {
-		it(test, function(){
+		it(test.toString(), function(){
 			var exp = test;
 			var res = unidecode(test.toString());
 			assert.equal(res, exp);
@@ -47,7 +47,7 @@ describe('Basic string tests', function() {
 	});
 });
 
-describe('Complex tests', function(){
+describe('Complex tests', function() {
 	var tests = [
 		['Æneid', 'AEneid'],
 		['étude', 'etude'],
@@ -61,6 +61,7 @@ describe('Complex tests', function(){
 		['മലയാലമ്', 'mlyaalm'], // the Malayaalam word for 'Malayaalam'
 		// (Yes, if we were doing it right, that'd be 'malayaalam', not 'mlyaalm'.)
 		['げんまい茶', 'genmaiCha '], // Japanese, astonishingly unmangled.
+		['❝This is ❛decorative❜ punctuation❉, ❴2❌5❵ ➪ ❿❞', '"This is \'decorative\' punctuation*, {2 X 5} --> (10)"'] // Decorative punctuation, arrows, etc.
 	];
 
 	tests.forEach(function(test) {
@@ -69,5 +70,31 @@ describe('Complex tests', function(){
 			var res = unidecode(test[0]);
 			assert.equal(res, exp);
 		});
+	});
+});
+
+describe('Smart spacing', function() {
+	it('should remove extraneous spaces and add spaces where needed', function() {
+		assert.equal(unidecode('Café 北京, 鞋 size 10½, 33⅓ RPM', { smartSpacing: true }), 'Cafe Bei Jing, Xie size 10 1/2, 33 1/3 RPM');
+	});
+});
+
+describe('German umlaut handling', function() {
+	it('should strip umlauts but not at "e" by default', function() {
+		assert.equal(unidecode('ÄäÖöÜü, Schrödinger'), 'AaOoUu, Schrodinger');
+	});
+
+	it('should strip umlauts and add an "e" in German mode', function() {
+		assert.equal(unidecode('ÄäÖöÜü, Schrödinger', { german: true }), 'AEaeOEoeUEue, Schroedinger');
+	});
+});
+
+describe('Emoji handling', function() {
+	it('should render basic emojis', function() {
+		assert.equal(unidecode('👀👁💙😀😁😇 😈😘😱'), ':eyes::eye:<3:-):-DO:-) >:-):-*=:-O');
+	});
+
+	it('should render basic emojis with smart spacing', function() {
+		assert.equal(unidecode('👀👁💙😀😁😇 😈😘😱', { smartSpacing: true }), ':eyes: :eye: <3 :-) :-D O:-)  >:-) :-* =:-O');
 	});
 });

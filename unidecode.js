@@ -45,6 +45,49 @@ if (!String.prototype.trim) {
   };
 }
 
+if (!Array.prototype.fill) {
+  Object.defineProperty(Array.prototype, 'fill', {
+    value: function(value) {
+      // Steps 1-2.
+      if (this == null)
+        throw new TypeError('this is null or not defined');
+
+      var O = Object(this);
+
+      // Steps 3-5.
+      var len = O.length >>> 0;
+
+      // Steps 6-7.
+      var start = arguments[1];
+      var relativeStart = start >> 0;
+
+      // Step 8.
+      var k = relativeStart < 0 ?
+        Math.max(len + relativeStart, 0) :
+        Math.min(relativeStart, len);
+
+      // Steps 9-10.
+      var end = arguments[2];
+      var relativeEnd = end === undefined ?
+        len : end >> 0;
+
+      // Step 11.
+      var final = relativeEnd < 0 ?
+        Math.max(len + relativeEnd, 0) :
+        Math.min(relativeEnd, len);
+
+      // Step 12.
+      while (k < final) {
+        O[k] = value;
+        k++;
+      }
+
+      // Step 13.
+      return O;
+    }
+  });
+}
+
 var codepoints;
 
 try {
@@ -68,7 +111,8 @@ module.exports = function unidecode(str, options) {
   if (!smartSpacing)
     return result;
 
-  return result.replace(/\x80(?!\w)/g, '').replace(/\x80\x80|(\w)\x80/g, '$1 ').replace(/\x80/g, '');
+  return result.replace(/\x80(?!\w)/g, '').replace(/\x80\x80|(\w)\x80/g, '$1\x81').replace(/\x80/g, '')
+    .replace(/^\x81+|\x81+$/g, '').replace(/\x81 \x81/g, '  ').replace(/\x81+/g, ' ');
 };
 
 function unidecode_internal_replace(ch) {
@@ -77,10 +121,12 @@ function unidecode_internal_replace(ch) {
   var high = cp >> 8;
   var row = high + (high === 0 && german ? 0.5 : 0);
   var low = cp & 0xFF;
+  // This doesn't cover all emoji, just those currently defined.
+  var emoji = (high === 0x1F4 || high === 0x1F6 || high === 0x1F9);
 
   if (0x18 < high && high < 0x1E || 0xD7 < high && high < 0xF9)
-    return '';
-  else if (high > 0xFF && high !== 0x1F4 && high !== 0x1F6 /* && high !== 0x1F9 */) {
+    return ''; // Isolated high or low surrogate
+  else if (high > 0xFF && !emoji) {
     return '_';
   }
 
@@ -102,8 +148,10 @@ function unidecode_internal_replace(ch) {
 
   ch = tr[row][low];
 
-  if (!smartSpacing || /^\w+$/.test(ch) || /^:.+:$/.test(ch))
+  if (!smartSpacing || ch === '[?]' || ch === '_' || /^\w+$/.test(ch))
     return ch;
+  else if (emoji)
+    return '\x80\x81' + ch + '\x81\x80';
   else
     return '\x80' + ch.trim() + '\x80';
 }
