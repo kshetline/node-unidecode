@@ -14,12 +14,12 @@ Note that all the files named 'x??.js' in data are derived directly from the equ
 
 ## Installation
 
-    $ npm install unidecode
+    $ npm install unidecode-plus
 
 ## Usage
 
     $ node
-    > var unidecode = require('unidecode');
+    > var unidecode = require('unidecode-plus');
     > unidecode("aéà)àçé");
     'aea)ace'
     > unidecode("に間違いがないか、再度確認してください。再読み込みしてください。");

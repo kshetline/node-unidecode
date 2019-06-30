@@ -1,12 +1,13 @@
 {
   "name": "unidecode-plus",
-  "description": "ASCII transliterations of Unicode text",
+  "description": "ASCII transliteration of Unicode text, with emoji support and smart spacing",
   "keywords": [
     "unidecode",
     "unicode",
     "utf8",
     "ascii",
-    "transliteration"
+    "transliteration",
+    "emoji"
   ],
   "version": "0.0.0-alpha",
   "dependencies": {},
@@ -15,8 +16,16 @@
   "main": "./unidecode",
   "licenses": [
     {
+      "type": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    {
       "type": "BSD",
-      "url": "https://github.com/kshetline/node-unidecode/blob/master/LICENSE"
+      "url": "https://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_.28.22BSD_License_2.0.22.2C_.22Revised_BSD_License.22.2C_.22New_BSD_License.22.2C_or_.22Modified_BSD_License.22.29"
+    },
+    {
+      "type": "Perl",
+      "url": "https://metacpan.org/pod/perlartistic"
     }
   ],
   "scripts": {
