@@ -1,0 +1,6 @@
+/.idea
+/coverage
+/scripts
+/test
+.travis.yml
+unidecode-old.js

@@ -1,26 +1,28 @@
 {
-  "name": "unidecode",
+  "name": "unidecode-plus",
   "description": "ASCII transliterations of Unicode text",
   "keywords": [
     "unidecode",
     "unicode",
-    "utf8"
+    "utf8",
+    "ascii",
+    "transliteration"
   ],
-  "version": "0.1.8",
-  "homepage": "http://blog.fgribreau.com/2012/05/unidecode-for-javascript-nodejs.html",
+  "version": "0.0.0-alpha",
   "dependencies": {},
-  "repository": "git@github.com:FGRibreau/node-unidecode.git",
-  "author": "Francois-Guillaume Ribreau <npm@fgribreau.com> (http://fgribreau.com)",
+  "repository": "https://github.com/kshetline/node-unidecode.git",
+  "author": "Kerry Shetline <kerry@shetline.com>",
   "main": "./unidecode",
   "licenses": [
     {
       "type": "BSD",
-      "url": "http://github.com/FGRibreau/node-unidecode/blob/master/LICENSE"
+      "url": "https://github.com/kshetline/node-unidecode/blob/master/LICENSE"
     }
   ],
   "scripts": {
     "test": "mocha",
-    "lint": "jshint *.js */*.js"
+    "lint": "jshint *.js */*.js",
+    "speed-compare": "node test/speed-compare.js"
   },
   "engines": {
     "node": ">= 0.4.12"
