@@ -11,7 +11,7 @@
   ],
   "version": "0.0.0-alpha",
   "dependencies": {},
-  "repository": "https://github.com/kshetline/node-unidecode.git",
+  "repository": "https://github.com/kshetline/unidecode-plus.git",
   "author": "Kerry Shetline <kerry@shetline.com>",
   "main": "./unidecode",
   "licenses": [
