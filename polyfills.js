@@ -1,3 +1,5 @@
+'use strict';
+
 if (!String.prototype.codePointAt) {
   String.prototype.codePointAt = function(index) {
     if (index >= this.length)
