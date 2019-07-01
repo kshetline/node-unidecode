@@ -5,3 +5,4 @@
 .travis.yml
 unidecode-old.js
 package-lock.json
+.npmrc
