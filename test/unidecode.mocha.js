@@ -77,10 +77,16 @@ describe('Smart spacing', function() {
 	it('should remove extraneous spaces and add spaces where needed', function() {
 		assert.equal(unidecode('Café 北京, 鞋 size 10½, 33⅓ RPM', { smartSpacing: true }), 'Cafe Bei Jing, Xie size 10 1/2, 33 1/3 RPM');
 	});
+
+	it('should handle deferred smart spacing', function() {
+	  var str = unidecode('Café 北京, 鞋 size 10½, 33⅓ RPM', { deferredSmartSpacing: true });
+	  assert.ok(/[\x80\x81]/.test(str));
+		assert.equal(unidecode.resolveSpacing(str), 'Cafe Bei Jing, Xie size 10 1/2, 33 1/3 RPM');
+	});
 });
 
 describe('German umlaut handling', function() {
-	it('should strip umlauts but not at "e" by default', function() {
+	it('should strip umlauts but not add an "e" by default', function() {
 		assert.equal(unidecode('ÄäÖöÜü, Schrödinger'), 'AaOoUu, Schrodinger');
 	});
 
@@ -96,5 +102,12 @@ describe('Emoji handling', function() {
 
 	it('should render basic emojis with smart spacing', function() {
 		assert.equal(unidecode('👀👁💙😀😁😇 😈😘😱', { smartSpacing: true }), ':eyes: :eye: <3 :-) :-D O:-)  >:-) :-* =:-O');
+	});
+});
+
+describe('Skip ranges', function() {
+	it('should transliterate only characters outside of the specified skip ranges', function() {
+		assert.equal(unidecode('Café 北京, 👀👁💙😀😁😇 😈😘😱',
+      { skipRanges: [[0x0, 0xFFFF]], smartSpacing: true }), 'Café 北京, :eyes: :eye: <3 :-) :-D O:-)  >:-) :-* =:-O');
 	});
 });

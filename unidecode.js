@@ -1,12 +1,13 @@
 /**
- * Unidecode takes full-range Unicode text and tries to represent it using US-ASCII characters (i.e., the universally
- * displayable characters between 0x00 and 0x7F). The representation is almost always an attempt at transliteration --
- * i.e., conveying, in Roman letters, the pronunciation expressed by the text in some other writing system. Some of the
- * transliterations go for matching the _shape_ of characters rather than their pronunciation, such as transliterating
- * the Greek letter `ρ` (rho) as the ASCII `p`, even though it sounds more like an `r`.
+ * Unidecode-plus takes full-range Unicode text and tries to represent it using only US-ASCII characters (i.e., the
+ * universally displayable characters between 0x00 and 0x7F). The representation is generally an attempt at
+ * transliteration -- i.e., conveying, in Roman letters, the pronunciation expressed by the text in some other writing
+ * system. Some of the transliterations go for matching the _shape_ of characters rather than their pronunciation, such
+ * as transliterating the Greek letter `ρ` (rho) as the ASCII `p`, even though it sounds more like an `r`. Various
+ * emojis are represented either as "ASCII art" or English text.
  *
- * The tables used (in data) are converted from the tables provided in the perl libraryText::Unidecode
- * (http://search.cpan.org/dist/Text-Unidecode/lib/Text/Unidecode.pm) and are distributed under the perl license.
+ * The tables used (in data) are converted from the tables provided in the Perl libraryText::Unidecode
+ * (http://search.cpan.org/dist/Text-Unidecode/lib/Text/Unidecode.pm) and are distributed under the Perl license.
  *
  * Whereas the original JavaScript and Perl versions of Unidecode only worked the Unicode Basic Multilingual Plane
  * (BMP, U+0 to U+FFFF), this version also handles transliteration of some characters beyond the BMP, like popular
@@ -14,80 +15,14 @@
  *
  * @author Kerry Shetline
  *
- * Based on Francois-Guillaume Ribreau's unidecode, which in turn was based on a port of unidecode for php.
+ * Based on Francois-Guillaume Ribreau's unidecode, which in turn was based on a port of unidecode for Perl.
  */
 
 'use strict';
 
+require('./polyfills');
+
 var tr = {};
-
-if (!String.prototype.codePointAt) {
-  String.prototype.codePointAt = function(index) {
-    if (index >= this.length)
-      return NaN;
-
-    var code = this.charCodeAt(index);
-
-    if (0xD800 <= code && code <= 0xDBFF) {
-      var surr = this.charCodeAt(index + 1);
-
-      if (!isNaN(surr) && 0xDC00 <= surr && surr <= 0xDFFF)
-        code = 0x10000 + ((code - 0xD800) << 10) + (surr - 0xDC00);
-    }
-
-    return code;
-  };
-}
-
-if (!String.prototype.trim) {
-  String.prototype.trim = function() {
-    return this.replace(/^\s+|\s+$/g, '');
-  };
-}
-
-if (!Array.prototype.fill) {
-  Object.defineProperty(Array.prototype, 'fill', {
-    value: function(value) {
-      // Steps 1-2.
-      if (this == null)
-        throw new TypeError('this is null or not defined');
-
-      var O = Object(this);
-
-      // Steps 3-5.
-      var len = O.length >>> 0;
-
-      // Steps 6-7.
-      var start = arguments[1];
-      var relativeStart = start >> 0;
-
-      // Step 8.
-      var k = relativeStart < 0 ?
-        Math.max(len + relativeStart, 0) :
-        Math.min(relativeStart, len);
-
-      // Steps 9-10.
-      var end = arguments[2];
-      var relativeEnd = end === undefined ?
-        len : end >> 0;
-
-      // Step 11.
-      var final = relativeEnd < 0 ?
-        Math.max(len + relativeEnd, 0) :
-        Math.min(relativeEnd, len);
-
-      // Step 12.
-      while (k < final) {
-        O[k] = value;
-        k++;
-      }
-
-      // Step 13.
-      return O;
-    }
-  });
-}
-
 var codepoints;
 
 try {
@@ -100,23 +35,33 @@ catch (err) {
 }
 
 var german = false;
+var deferredSmartSpacing = false;
 var smartSpacing = false;
+var skipRanges;
 
 module.exports = function unidecode(str, options) {
   german = options && options.german;
-  smartSpacing = options && options.smartSpacing;
+  deferredSmartSpacing = options && options.deferredSmartSpacing;
+  smartSpacing = deferredSmartSpacing || (options && options.smartSpacing);
+  skipRanges = options && options.skipRanges;
 
-  var result = str.replace(codepoints, unidecode_internal_replace);
+  str = str.replace(codepoints, unidecode_internal_replace);
 
-  if (!smartSpacing)
-    return result;
-
-  return result.replace(/\x80(?!\w)/g, '').replace(/\x80\x80|(\w)\x80/g, '$1\x81').replace(/\x80/g, '')
-    .replace(/^\x81+|\x81+$/g, '').replace(/\x81 \x81/g, '  ').replace(/\x81+/g, ' ');
+  if (!smartSpacing || deferredSmartSpacing)
+    return str;
+  else
+    return resolveSpacing(str);
 };
 
 function unidecode_internal_replace(ch) {
   var cp = ch.codePointAt(0), ch0 = ch;
+
+  if (skipRanges) {
+    for (var i = 0; i < skipRanges.length; ++i) {
+        if (skipRanges[i][0] <= cp && cp <= skipRanges[i][1])
+            return ch;
+    }
+  }
 
   var high = cp >> 8;
   var row = high + (high === 0 && german ? 0.5 : 0);
@@ -155,3 +100,10 @@ function unidecode_internal_replace(ch) {
   else
     return '\x80' + ch.trim() + '\x80';
 }
+
+function resolveSpacing(str) {
+  return str.replace(/\x80(?!\w)/g, '').replace(/\x80\x80|(\w)\x80/g, '$1\x81').replace(/\x80/g, '')
+    .replace(/^\x81+|\x81+$/g, '').replace(/\x81 \x81/g, '  ').replace(/\s?\x81+/g, ' ');
+}
+
+module.exports.resolveSpacing = resolveSpacing;
