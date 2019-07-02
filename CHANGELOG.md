@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.0.1
+
+* Fixed typings.
+
 ## 1.0.0
 
 * Forked this project from v0.1.8 of [unidecode](https://github.com/fgribreau/node-unidecode/tree/v0.1.8).

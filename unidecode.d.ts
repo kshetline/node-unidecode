@@ -1,6 +1,8 @@
+export default unidecode;
+
 declare function unidecode(str: string, options?: UnidecodeOptions): string;
 
-declare module 'unidecode' {
+declare namespace unidecode {
   export function resolveSpacing(str: string): string;
 }
 
