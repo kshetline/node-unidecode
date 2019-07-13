@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.0.2
+
+* German mode now works with combining umlaut (diaeresis).
+
 ## 1.0.1
 
 * Fixed typings.

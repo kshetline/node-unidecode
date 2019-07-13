@@ -88,10 +88,12 @@ describe('Smart spacing', function() {
 describe('German umlaut handling', function() {
   it('should strip umlauts but not add an "e" by default', function() {
     assert.equal(unidecode('ÄäÖöÜü, Schrödinger'), 'AaOoUu, Schrodinger');
+    assert.equal(unidecode('A\u0308a\u0308O\u0308o\u0308U\u0308u\u0308'), 'AaOoUu');
   });
 
   it('should strip umlauts and add an "e" in German mode', function() {
     assert.equal(unidecode('ÄäÖöÜü, Schrödinger', { german: true }), 'AEaeOEoeUEue, Schroedinger');
+    assert.equal(unidecode('A\u0308a\u0308O\u0308o\u0308U\u0308u\u0308', { german: true }), 'AEaeOEoeUEue');
   });
 });
 

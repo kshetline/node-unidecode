@@ -45,6 +45,9 @@ module.exports = function unidecode(str, options) {
   smartSpacing = deferredSmartSpacing || (options && options.smartSpacing);
   skipRanges = options && options.skipRanges;
 
+  if (german)
+    str = str.replace(/([AOU])\u0308/g, '$1E').replace(/([aou])\u0308/g, '$1e');
+
   str = str.replace(codepoints, unidecode_internal_replace);
 
   if (!smartSpacing || deferredSmartSpacing)
