@@ -105,8 +105,14 @@ function unidecode_internal_replace(ch) {
 }
 
 function resolveSpacing(str) {
-  return str.replace(/\x80(?!\w)/g, '').replace(/\x80\x80|(\w)\x80/g, '$1\x81').replace(/\x80/g, '')
-    .replace(/^\x81+|\x81+$/g, '').replace(/\x81 \x81/g, '  ').replace(/\s?\x81+/g, ' ');
+  return str
+    .replace(/\x80(?!\w)/g, "")
+    .replace(/\x80\x80|(\w)\x80/g, "$1\x81")
+    .replace(/\x80/g, "")
+    .replace(/^\x81+|\x81+$/g, "")
+    .replace(/\x81 \x81/g, "  ")
+    .replace(/\s?\x81+/g, " ")
+    .replace(/(\w)(--)(\w)/g, (_, p1, _2, p3) => `${p1} - ${p3}`);
 }
 
 module.exports.resolveSpacing = resolveSpacing;

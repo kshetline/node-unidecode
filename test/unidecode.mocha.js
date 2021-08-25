@@ -78,6 +78,11 @@ describe('Smart spacing', function() {
     assert.equal(unidecode('Café 北京, 鞋 size 10½, 33⅓ RPM', { smartSpacing: true }), 'Cafe Bei Jing, Xie size 10 1/2, 33 1/3 RPM');
   });
 
+  it('should replace an em-dash straddled by word characters with " - " instead of "--"', function() {
+    assert.equal(
+      unidecode("No—I mean yes!", { smartSpacing: true }), "No - I mean yes!");
+  });
+
   it('should handle deferred smart spacing', function() {
     var str = unidecode('Café 北京, 鞋 size 10½, 33⅓ RPM', { deferredSmartSpacing: true });
     assert.ok(/[\x80\x81]/.test(str));
