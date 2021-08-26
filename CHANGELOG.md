@@ -1,5 +1,9 @@
 # Change Log
 
+## 1.0.3
+
+* Special handling for em dashes: In smart spacing mode, em dashes become " - " instead of "--" when found between words.
+
 ## 1.0.2
 
 * German mode now works with combining umlaut (diaeresis).

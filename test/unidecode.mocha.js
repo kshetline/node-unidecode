@@ -81,6 +81,13 @@ describe('Smart spacing', function() {
   it('should replace an em-dash straddled by word characters with " - " instead of "--"', function() {
     assert.equal(
       unidecode("No—I mean yes!", { smartSpacing: true }), "No - I mean yes!");
+    assert.equal(
+      unidecode("#—#", { smartSpacing: true }), "#--#");
+  });
+
+  it('should leave ASCII double dashes unchanged', function() {
+    assert.equal(
+      unidecode("No--I mean yes!", { smartSpacing: true }), "No--I mean yes!");
   });
 
   it('should handle deferred smart spacing', function() {

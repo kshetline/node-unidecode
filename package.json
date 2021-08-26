@@ -9,7 +9,7 @@
     "transliteration",
     "emoji"
   ],
-  "version": "1.0.2",
+  "version": "1.0.3",
   "dependencies": {},
   "repository": "https://github.com/kshetline/unidecode-plus.git",
   "author": "Kerry Shetline <kerry@shetline.com>",

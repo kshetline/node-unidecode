@@ -69,6 +69,7 @@ function unidecode_internal_replace(ch) {
   var high = cp >> 8;
   var row = high + (high === 0 && german ? 0.5 : 0);
   var low = cp & 0xFF;
+  var emDash = cp === 0x2014;
   // This doesn't cover all emoji, just those currently defined.
   var emoji = (high === 0x1F4 || high === 0x1F6 || high === 0x1F9);
 
@@ -96,6 +97,8 @@ function unidecode_internal_replace(ch) {
 
   ch = tr[row][low];
 
+  if (smartSpacing && emDash)
+    return '\x80--\x80';
   if (!smartSpacing || ch === '[?]' || ch === '_' || /^\w+$/.test(ch))
     return ch;
   else if (emoji)
@@ -106,13 +109,13 @@ function unidecode_internal_replace(ch) {
 
 function resolveSpacing(str) {
   return str
+    .replace(/(\w)(\x80--\x80)(\w)/g, function(_, p1, _2, p3) { return p1 + ' - ' + p3; })
     .replace(/\x80(?!\w)/g, "")
     .replace(/\x80\x80|(\w)\x80/g, "$1\x81")
     .replace(/\x80/g, "")
     .replace(/^\x81+|\x81+$/g, "")
     .replace(/\x81 \x81/g, "  ")
-    .replace(/\s?\x81+/g, " ")
-    .replace(/(\w)(--)(\w)/g, (_, p1, _2, p3) => `${p1} - ${p3}`);
+    .replace(/\s?\x81+/g, " ");
 }
 
 module.exports.resolveSpacing = resolveSpacing;
