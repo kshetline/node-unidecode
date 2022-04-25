@@ -11,7 +11,7 @@ __Unidecode-plus__ is an extended version of __unidecode__, which in turn is a  
 
 __Unidecode-plus__ takes full-range Unicode text and tries to represent it using only US-ASCII characters (i.e., the universally
 displayable characters between 0x00 and 0x7F). The representation is generally an attempt at transliteration &mdash;
-i.e., conveying, in Roman letters, the pronunciation expressed by the original text in some other writing system. Some of the transliterations go for matching the _shape_ of characters rather than their pronunciation, such as transliterating the Greek letter `ρ` (rho) as the ASCII `p`, even though it sounds more like an `r`. Various emoji are represented either as "ASCII art" or English text.
+i.e., conveying, in Roman letters, the pronunciation expressed by the original text in some other writing system. Some transliterations go for matching the _shape_ of characters rather than their pronunciation. Various emoji are represented either as "ASCII art" or English text.
 
 __Unidecode-plus__ updates the original __unidecode__ in the following ways:
 * Adds support beyond the Unicode Basic Multilingual Plane for transforming many emoji into ASCII-art equivalents.

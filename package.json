@@ -9,8 +9,7 @@
     "transliteration",
     "emoji"
   ],
-  "version": "1.0.3",
-  "dependencies": {},
+  "version": "1.0.4",
   "repository": "https://github.com/kshetline/unidecode-plus.git",
   "author": "Kerry Shetline <kerry@shetline.com>",
   "main": "./unidecode",
@@ -26,6 +25,6 @@
   "devDependencies": {
     "@types/node": "^12.0.10",
     "jshint": "^2.5.11",
-    "mocha": "^2.5.3"
+    "mocha": "^9.2.2"
   }
 }
